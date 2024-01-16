@@ -1,0 +1,285 @@
+---
+title: "PCM_S8"
+author: "Marcial Escudero"
+date: "2024-01-15"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+LINAJES A TRAVÉS DEL TIEMPO (LTT)
+
+Una manera muy práctica de represetar el proceso de diversificación es mediante lineaje through time o LTT.
+Básicamentee lo que hacemos es contar el númeor de linajes que se van acumulando desde la raíz de la filogenia hasta el presente.
+
+Vamos a visualizar esto mediante la creación de una figura a partir de datos simulados.
+
+```{r}
+## load the phytools package
+library(phytools)
+## simulate a pure-birth (Yule) tree using pbtree
+tree<-pbtree(n=12,scale=100)
+## split our plotting area in two
+par(mfrow=c(2,1))
+## graph our phylogeny
+plotTree(tree,ftype="off",mar=c(4.1,4.1,2.1,1.1))
+## compute the lineages through time using ltt
+obj<-ltt(tree,plot=FALSE)
+## draw vertical lines at each lineage accumulation
+## event
+abline(v=obj$times,lty="dotted",col=make.transparent("blue",0.5))
+## add a horizontal axis and plot label
+axis(1,cex.axis=0.8)
+mtext("(a)",line=1,at=-10)
+## create a second plot graphing our LTT
+plot(obj,mar=c(5.1,4.1,2.1,1.1),bty="n",log.lineages=FALSE,las=1,cex.axis=0.8)
+## add the same vertical lines as in panel a)
+abline(v=obj$times,lty="dotted",col=make.transparent("blue",0.5))
+## label our plot
+mtext("(b)",line=1,at=-10)
+```
+
+La teoría nos dice que en un escenario de speciación constante (sin extinción; pur-birth), los linajes se acumulan exponecialmente a lo largo del tiempo desde la raíz del árbol.
+Como tal, esperamos que una curva que proporcione el número de linajes a lo largo del tiempo sea “log-lineal”: en otras palabras, lineal en una escala semilogarítmica, asumiendo un proceso de diversificación que involucra sólo especiación y en el cual la especiación ocurre a un ritmo constante.
+
+Para estudiar el proceso de diversificación en más detalle vamos a utilizar la filogenia de un grupo de peces (Near et lal., 2011). En este estudio se muestraron 201 de un total de 216 especie que constituyen el clado de peces (93%). Para cálculos de tasas de diversificación es necesario tener en cuenta ese muestreo incompleto que se ha hecho del grupo.
+
+Cargemos la filogenia del grupo. Y visualicemos la filogenia.
+
+```{r}
+darter.tree<-read.tree("etheostoma_percina_chrono.tre")
+
+## plot our tree in fan style
+plotTree(darter.tree,ftype="i",fsize=0.4,type="fan",lwd=1,part=0.88)
+## compute the total height of the tree
+h<-max(nodeHeights(darter.tree))
+## graph a temporal axis without labeling
+obj<-axis(1,pos=-2,at=h-c(0,5,10,15,20),cex.axis=0.5,labels=FALSE)
+## add labels, but going backwards from the
+## present day
+text(obj,rep(-5,length(obj)),h-obj,cex=0.6)
+## add a text label to the axis
+text(mean(obj),-8,"time (mybp)",cex=0.8)
+```
+
+Y ya estamos listo para computar LTT.
+
+```{r}
+## compute "ltt" object
+darter.ltt<-ltt(darter.tree, plot=FALSE)
+darter.ltt
+## modify the figure margins
+par(mar=c(5.1,4.1,2.1,2.1))
+## plot "ltt" object
+plot(darter.ltt,log.lineages=FALSE,log="y",col="blue",lwd=2,bty="n",las=1,cex.axis=0.8)
+```
+
+
+ESTOMACIÓN DE TASAS DE ESPECIACIÓN Y EXTINCIÓN A PARTIR DE UNA FILOGENIA
+
+Usaremos para calcular la tasas de especiación y extinción el método de Nee et al. (1992).
+Hasta ahora hemos visto que si solo hay especiación, esperamos que la curva de acumulación de linajes se una recta cuando lo representamos en una escala semilogarítmica.
+La pendiente de la recta de acumulación de linajes en escala semilogatirmica es en este caso el valor esperado de especiación o diversificación (ya que la extinción es 0; Nee et al., 1992, 1994a).
+Si la diversificación ocurre por especiación y extinción, entonces esta acumulación de linajes a traves del tiempo ya no va a ser lineal en esa escala semilogaritmica. En cambio, esta curva tenderá a estar curvada hacia arriba cerca de los terminales de la filogenia, un fenómeno que se llama "the pull of the present" (Nee et al., 1992, 1994b). En esencia la magnitud de esa curvatura nos dará por tanto la tasa de extinción.
+Un incremento de la pendiente hacia el presente es firma de la extinción. Y cuanto mayor sea el ratio extinción/especiación, mayor será la magnitud de esta curva.
+Veamoslo mediante una simulación.
+Con la función pbtree vamos a simular un árbol sin extinción (en este caso tenemos un recta en escala semilogaritmica) y está pendiente es la tasas de especiación.
+También vamos a simular un arbol de tipo birth-death, es decir, con especiación y extinción, además, está extinción será muy elevada. Vamos a calcular el LTT de este árbol incluyendo los linakes extintos.
+Finalmente, quitaremos los linajes extintos y volveremos a creat el LTT. Y en este caso visualizaremos lo que esperamos bajo el efecto "pull of the present".
+
+```{r}
+
+## first simulate tree with no extinction
+tree.noExtinction<-pbtree(b=0.039,n=100,t=100,method="direct")
+## next simulate tree with extinction
+tree.withExtinction<-pbtree(b=0.195,d=0.156,n=100,t=100,method="direct")
+## prune extinct lineages to recreate the
+## "reconstructed" phylogeny
+tree.reconstructed<-drop.tip(tree.withExtinction,getExtinct(tree.withExtinction))
+## add a root edge (to accommodate lineages pruned
+## before the first divergence event in the
+## reconstructed tree)
+tree.reconstructed$root.edge<-100-max(nodeHeights(tree.reconstructed))
+## convert root edge to an unbranching node
+tree.reconstructed<-rootedge.to.singleton(tree.reconstructed)
+## create "ltt" object from each tree
+ltt.noE<-ltt(tree.noExtinction,plot=FALSE)
+ltt.wE<-ltt(tree.withExtinction,plot=FALSE)
+ltt.recon<-ltt(tree.reconstructed,plot=FALSE)
+## graph the LTTs
+par(lend=1,mar=c(5.1,4.1,2.1,2.1))
+plot(ltt.noE,bty="n",log.lineages=FALSE,log="y",lwd=2,xlim=c(0,110),las=1,cex.axis=0.8)
+plot(ltt.wE,log.lineages=FALSE,lty="dotted",col="black",lwd=2,add=TRUE)
+plot(ltt.recon,log.lineages=FALSE,lwd=2,add=TRUE,col="darkgray")
+## add a legend
+legend(x="topleft",lty=c("solid","dotted","solid"),lwd=2,col=c("black","black","darkgray"),legend=c("no extinction","extinction (with extinct lineages)","extinction (reconstructed)"),bty="n",cex=0.7)
+## add arrow and text to point to the "pull of
+## the present"
+arrows(102,29.9,96.6,45.2,length=0.05,lwd=2)
+text(x=106,y=28,"pull of\nthe present",adj=c(1,1),cex=0.7)
+```
+
+Se puede observar perfectamente el pull of the present.
+Esto lo vamos autilizar para calcular la tasa de especiación y extinción.
+
+Usaremos la función fit.bd de phytools (Nee t al., 1994a).
+
+```{r}
+bd.model<-fit.bd(darter.tree)
+bd.model
+```
+
+Podemos apreciar el calculo de la tasa de especiación y extinción.
+
+Pero recuerda que no tenemos muestreado el 100% de la especies. Tenemos que tener esto en cuenta y recalcular los parámetros.
+
+```{r}
+## compute sampling fraction
+sampling.f<-201/216
+sampling.f
+
+## re-fit out model, setting rho equal to
+## our computed sampling fraction
+bd.model<-fit.bd(darter.tree,rho=sampling.f)
+bd.model
+```
+
+Podemos apreciar que ha incrementado tanto la tasa de especiación como también la de extinción.
+
+Veamos el efecto el % de muestreo en la estima de especiación y extinción.
+Si volvemos a nuestro data set simulado podemos sacar alguna conclusiones.
+
+```{r}
+## collapse singleton nodes
+tree.reconstructed<-collapse.singles(tree.reconstructed)
+## drop 50 random species
+tree.missing<-drop.tip(tree.reconstructed,sample(tree.reconstructed$tip.label,50))
+## compute "ltt" object without plotting
+ltt.recon<-ltt(tree.reconstructed,plot=FALSE)
+ltt.missing<-ltt(tree.missing,plot=FALSE)
+## set margins and line-ending style
+par(mar=c(5.1,4.1,2.1,2.1),lend=2)
+## plot our "ltt" objects
+plot(ltt.recon,bty="n",log.lineages=FALSE,log="y",lwd=2,col="darkgray",las=1,cex.axis=0.8)
+plot(ltt.missing,log.lineages=FALSE,lty="dotted",lwd=2,add=TRUE)
+## add a legend
+legend(x="topleft",lty=c("solid","dotted"),lwd=c(2,2),col=c("darkgray","black"),legend=c("reconstructed phylogeny","phylogeny with missing taxa"),bty="n",cex=0.8)
+```
+
+A pesar de quitar 50 especies los LTT son muy parecidos en toda la historia evolutiva salvo cuando nos acercamos al presente. En el LTT de todas las especies podemos apreciar el pull of the present. Sin embargo, en el LTT en donde quitamos la 50 especies, se parece más a una línea recta.
+Como hemos dicho antes el patrón de pull of the present aporta información sobre la extinción. Si no tenemos un muestreo completo de nuestro dataset se oscuerece este patron y la posibilidad de inferir información sobre el proceso de extinción.
+Por lo tanto es esencial tener en cuenta las especies que no muestreadas en la filogenia cuando se infiere el patrón de diverisificación a partir de una filogenia.
+
+
+Podemos comparar el ajuste de diferentes modelos de diversificación, por ejemplo los mencionados pure-birth y birth-death.
+
+```{r}
+## fit Yule model
+yule.model<-fit.yule(darter.tree,rho=sampling.f)
+yule.model
+
+## compute AICs for Yule and birth-death
+## models
+AIC(yule.model,bd.model)
+
+library(lmtest)
+lrtest(yule.model,bd.model)
+```
+
+Nuestro árbol se ajusta un proceso pure-birth.
+
+Finalmente vamos a ver con un simple experimento hasta que punto es importante tener en cuenta las especies no muestreadas en la filogenia.
+Vamos a asumir que nuestro grupo de especies bajo estudio tiene 400 especies en vez de 216.
+Y vamos a de nuevo a ajustar los modelos.
+
+```{r}
+## fit a birth-death model but assuming a true
+## N of 400
+bd.model2<-fit.bd(darter.tree,rho=201/400)
+bd.model2
+
+yule.model2<-fit.yule(darter.tree,rho=201/400)
+yule.model2
+
+lrtest(yule.model2,bd.model2)
+
+```
+
+Podemos ver como nuestra estima de extinción ha incrementado significativamente.
+Y además, ahora no rechazamos la hipótesis nula, el modelo pure-birth.
+
+
+ESTIMACIÓN DE TASAS DE DIVERFICACIÓN CON MÉTODOS BAYESIANOS MCMC
+
+Veamos ahora com ajustar modelos con el paquete de R diversitree (FitzJohn 2012).
+Vamos a usar diversitree también en las dos próximas sesiones. Aquí veremos como ajustar y compararar modelos birth-death mediante maximum likelihood y también mediantre MCMC bayesiano.
+Vamos pues a ello.
+```{r}
+## load diversitree
+library(diversitree)
+darter.tree<-multi2di(darter.tree)
+## make birth-death likelihood function
+bd<-make.bd(darter.tree,sampling.f=sampling.f)
+## find MLE using optimization function
+fitted.bd<-find.mle(bd,x.init=c(0.1,0.05),method="optim",lower=0)
+fitted.bd
+
+## make pure-birth likelihood function
+yule<-make.yule(darter.tree,sampling.f=sampling.f)
+## find MLE using optimization function
+fitted.yule<-find.mle(yule,x.init=0.1,method="optim",lower=0)
+fitted.yule
+
+anova(fitted.yule,fitted.bd)
+```
+
+Hasta ahora hemos estimado y comparado ambos modelos mediante maximum likelihood. Ahora vamos a proceder a estimar los modelos mediante MCMC bayesiano. Esto está muy bien implementado en este paquete.
+
+```{r}
+## run MCMC using diversitree::mcmc
+samples<-diversitree::mcmc(bd,c(1,0),nsteps=1e+05,lower=c(0,0),upper=c(Inf,Inf),w=c(0.05,0.05),fail.value=-Inf,print.every=10000)
+head(samples,20)
+```
+
+La convegencia de este modelo se alcanza bastante rápido. Quitaremos como burn-inel %5 inicial de la iteraciones.
+
+```{r}
+samples<-samples[-(1:5000),]
+```
+
+Echemos un vistazo a los resultados. Veamos el intervalo de confianza del 0.95.
+
+```{r}
+## load coda package
+library(coda)
+## extract posterior sample of lambda & mu
+lambda<-samples$lambda
+mu<-samples$mu
+## set object class to "mcmc"
+class(lambda)<-class(mu)<-"mcmc"
+## create data frame with our estimates and## HPD for each parameter
+object<-data.frame(lambda=c(mean(lambda),HPDinterval(lambda)),mu=c(mean(lambda),HPDinterval(mu)))
+rownames(object)<-c("estimate","2.5% HPD","97.5% HPD")
+## round our object to print it
+print(round(object,6))
+```
+
+Veamoslo ahora de manera visual.
+
+```{r}
+# set plot margins
+par(mar=c(5.1,4.1,2.1,2.1))
+## create posterior density plot
+profiles.plot(samples[c("lambda","mu")],col.line=c("red","blue"),bty="l",las=1,cex.axis=0.8)
+## add legend
+legend(x="topright",c(expression(lambda),expression(mu)),pch=22,pt.bg=make.transparent(c("red","blue"),0.5),pt.cex=c(2,2),bty="n",cex=0.8)
+
+```
+
+Como podemos ver los resultados están en concordancia con los estimados anteriormente. No podeoms descartar que la tasa de extinción sea cero.
+
+####################
+
+ACTIVIDADES
+
+Usa el archivo 10kTrees_Primates.nex que hay en este proyecto de R. Este archivo contiene 100 árboles de primates muestreados a partir de la distribución posterior de un análisis bayesiano y se obtuvo del "servidor web 10kTrees". 28 Estos árboles están (en teoría) calibrados en el tiempo en millones de años. Utilice phytools o diversitree para estimar las tasas de especiación y extinción de todos los árboles de la muestra. Calcule las tasas medias de especiación y extinción, así como la variabilidad en la tasa entre árboles. Tenga en cuenta la fracción de muestreo incompleta. Existe cierto debate sobre cuántas especies de primates existen actualmente. Varias fuentes afirman que el orden de los mamíferos Primates puede incluir de 376 a 522 especies. Establezca la fracción de muestreo para asumir estos valores diferentes para la diversidad total de especies del orden. ¿Qué efecto tienen estas diferentes diversidades supuestas en nuestra especiación estimada y ex?
