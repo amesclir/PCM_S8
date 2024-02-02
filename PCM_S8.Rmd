@@ -9,8 +9,8 @@ editor_options:
 
 LINAJES A TRAVÉS DEL TIEMPO (LTT)
 
-Una manera muy práctica de represetar el proceso de diversificación es mediante lineaje through time o LTT.
-Básicamentee lo que hacemos es contar el númeor de linajes que se van acumulando desde la raíz de la filogenia hasta el presente.
+Una manera muy práctica de represetar el proceso de diversificación es mediante "lineage through time" o LTT.
+Básicamentee lo que hacemos es contar el número de linajes que se van acumulando desde la raíz de la filogenia hasta el presente.
 
 Vamos a visualizar esto mediante la creación de una figura a partir de datos simulados.
 
@@ -39,10 +39,10 @@ abline(v=obj$times,lty="dotted",col=make.transparent("blue",0.5))
 mtext("(b)",line=1,at=-10)
 ```
 
-La teoría nos dice que en un escenario de speciación constante (sin extinción; pur-birth), los linajes se acumulan exponecialmente a lo largo del tiempo desde la raíz del árbol.
+La teoría nos dice que en un escenario de speciación constante (sin extinción; pure-birth), los linajes se acumulan exponecialmente a lo largo del tiempo desde la raíz del árbol.
 Como tal, esperamos que una curva que proporcione el número de linajes a lo largo del tiempo sea “log-lineal”: en otras palabras, lineal en una escala semilogarítmica, asumiendo un proceso de diversificación que involucra sólo especiación y en el cual la especiación ocurre a un ritmo constante.
 
-Para estudiar el proceso de diversificación en más detalle vamos a utilizar la filogenia de un grupo de peces (Near et lal., 2011). En este estudio se muestraron 201 de un total de 216 especie que constituyen el clado de peces (93%). Para cálculos de tasas de diversificación es necesario tener en cuenta ese muestreo incompleto que se ha hecho del grupo.
+Para estudiar el proceso de diversificación en más detalle vamos a utilizar la filogenia de un grupo de peces (Near et al., 2011). En este estudio se muestraron 201 de un total de 216 especie que constituyen el clado de peces (93%). Para cálculos de tasas de diversificación es necesario tener en cuenta ese muestreo incompleto que se ha hecho del grupo.
 
 Cargemos la filogenia del grupo. Y visualicemos la filogenia.
 
@@ -62,7 +62,7 @@ text(obj,rep(-5,length(obj)),h-obj,cex=0.6)
 text(mean(obj),-8,"time (mybp)",cex=0.8)
 ```
 
-Y ya estamos listo para computar LTT.
+Y ya estamos listoS para computar LTT.
 
 ```{r}
 ## compute "ltt" object
@@ -75,16 +75,16 @@ plot(darter.ltt,log.lineages=FALSE,log="y",col="blue",lwd=2,bty="n",las=1,cex.ax
 ```
 
 
-ESTOMACIÓN DE TASAS DE ESPECIACIÓN Y EXTINCIÓN A PARTIR DE UNA FILOGENIA
+ESTIMACIÓN DE TASAS DE ESPECIACIÓN Y EXTINCIÓN A PARTIR DE UNA FILOGENIA
 
-Usaremos para calcular la tasas de especiación y extinción el método de Nee et al. (1992).
+Usaremos para calcular laS tasas de especiación y extinción el método de Nee et al. (1992).
 Hasta ahora hemos visto que si solo hay especiación, esperamos que la curva de acumulación de linajes se una recta cuando lo representamos en una escala semilogarítmica.
-La pendiente de la recta de acumulación de linajes en escala semilogatirmica es en este caso el valor esperado de especiación o diversificación (ya que la extinción es 0; Nee et al., 1992, 1994a).
+La pendiente de la recta de acumulación de linajes en escala semilogatirmica es en este caso el valor esperado de especiación o diversificación (ya que la extinción es 0; Nee et al., 1992, 1994).
 Si la diversificación ocurre por especiación y extinción, entonces esta acumulación de linajes a traves del tiempo ya no va a ser lineal en esa escala semilogaritmica. En cambio, esta curva tenderá a estar curvada hacia arriba cerca de los terminales de la filogenia, un fenómeno que se llama "the pull of the present" (Nee et al., 1992, 1994b). En esencia la magnitud de esa curvatura nos dará por tanto la tasa de extinción.
 Un incremento de la pendiente hacia el presente es firma de la extinción. Y cuanto mayor sea el ratio extinción/especiación, mayor será la magnitud de esta curva.
 Veamoslo mediante una simulación.
-Con la función pbtree vamos a simular un árbol sin extinción (en este caso tenemos un recta en escala semilogaritmica) y está pendiente es la tasas de especiación.
-También vamos a simular un arbol de tipo birth-death, es decir, con especiación y extinción, además, está extinción será muy elevada. Vamos a calcular el LTT de este árbol incluyendo los linakes extintos.
+Con la función pbtree vamos a simular un árbol sin extinción (en este caso tenemos un recta en escala semilogaritmica) y esa pendiente es la tasa de especiación.
+También vamos a simular un arbol de tipo birth-death, es decir, con especiación y extinción, además, esa extinción será muy elevada. Vamos a calcular el LTT de ese árbol incluyendo los linajes extintos.
 Finalmente, quitaremos los linajes extintos y volveremos a creat el LTT. Y en este caso visualizaremos lo que esperamos bajo el efecto "pull of the present".
 
 ```{r}
@@ -150,8 +150,10 @@ Veamos el efecto el % de muestreo en la estima de especiación y extinción.
 Si volvemos a nuestro data set simulado podemos sacar alguna conclusiones.
 
 ```{r}
+plot(tree.reconstructed)
 ## collapse singleton nodes
 tree.reconstructed<-collapse.singles(tree.reconstructed)
+plot(tree.reconstructed)
 ## drop 50 random species
 tree.missing<-drop.tip(tree.reconstructed,sample(tree.reconstructed$tip.label,50))
 ## compute "ltt" object without plotting
@@ -167,7 +169,7 @@ legend(x="topleft",lty=c("solid","dotted"),lwd=c(2,2),col=c("darkgray","black"),
 ```
 
 A pesar de quitar 50 especies los LTT son muy parecidos en toda la historia evolutiva salvo cuando nos acercamos al presente. En el LTT de todas las especies podemos apreciar el pull of the present. Sin embargo, en el LTT en donde quitamos la 50 especies, se parece más a una línea recta.
-Como hemos dicho antes el patrón de pull of the present aporta información sobre la extinción. Si no tenemos un muestreo completo de nuestro dataset se oscuerece este patron y la posibilidad de inferir información sobre el proceso de extinción.
+Como hemos dicho antes el patrón de pull of the present aporta información sobre la extinción. Si no tenemos un muestreo completo de nuestro dataset se oscurece este patron y la posibilidad de inferir información sobre el proceso de extinción.
 Por lo tanto es esencial tener en cuenta las especies que no muestreadas en la filogenia cuando se infiere el patrón de diverisificación a partir de una filogenia.
 
 
@@ -186,11 +188,11 @@ library(lmtest)
 lrtest(yule.model,bd.model)
 ```
 
-Nuestro árbol se ajusta un proceso pure-birth.
+Nuestro árbol se ajusta a un proceso pure-birth.
 
 Finalmente vamos a ver con un simple experimento hasta que punto es importante tener en cuenta las especies no muestreadas en la filogenia.
 Vamos a asumir que nuestro grupo de especies bajo estudio tiene 400 especies en vez de 216.
-Y vamos a de nuevo a ajustar los modelos.
+Y vamos de nuevo a ajustar los modelos.
 
 ```{r}
 ## fit a birth-death model but assuming a true
@@ -214,6 +216,7 @@ ESTIMACIÓN DE TASAS DE DIVERFICACIÓN CON MÉTODOS BAYESIANOS MCMC
 Veamos ahora com ajustar modelos con el paquete de R diversitree (FitzJohn 2012).
 Vamos a usar diversitree también en las dos próximas sesiones. Aquí veremos como ajustar y compararar modelos birth-death mediante maximum likelihood y también mediantre MCMC bayesiano.
 Vamos pues a ello.
+
 ```{r}
 ## load diversitree
 library(diversitree)
@@ -276,10 +279,30 @@ legend(x="topright",c(expression(lambda),expression(mu)),pch=22,pt.bg=make.trans
 
 ```
 
-Como podemos ver los resultados están en concordancia con los estimados anteriormente. No podeoms descartar que la tasa de extinción sea cero.
+Como podemos ver los resultados están en concordancia con los estimados anteriormente. No podemos descartar que la tasa de extinción sea cero.
 
 ####################
 
 ACTIVIDADES
 
-Usa el archivo 10kTrees_Primates.nex que hay en este proyecto de R. Este archivo contiene 100 árboles de primates muestreados a partir de la distribución posterior de un análisis bayesiano y se obtuvo del "servidor web 10kTrees". 28 Estos árboles están (en teoría) calibrados en el tiempo en millones de años. Utilice phytools o diversitree para estimar las tasas de especiación y extinción de todos los árboles de la muestra. Calcule las tasas medias de especiación y extinción, así como la variabilidad en la tasa entre árboles. Tenga en cuenta la fracción de muestreo incompleta. Existe cierto debate sobre cuántas especies de primates existen actualmente. Varias fuentes afirman que el orden de los mamíferos Primates puede incluir de 376 a 522 especies. Establezca la fracción de muestreo para asumir estos valores diferentes para la diversidad total de especies del orden. ¿Qué efecto tienen estas diferentes diversidades supuestas en nuestra especiación estimada y ex?
+1. Usa el archivo 10kTrees_Primates.nex que hay en este proyecto de R. Este archivo contiene 100 árboles de primates muestreados a partir de la distribución posterior de un análisis bayesiano y se obtuvo del "servidor web 10kTrees". Estos árboles están (en teoría) calibrados en el tiempo en millones de años. Utilice phytools o diversitree para estimar las tasas de especiación y extinción de todos los árboles de la muestra. Calcule las tasas medias de especiación y extinción, así como la variabilidad en la tasa entre árboles. Tenga en cuenta la fracción de muestreo incompleta. Existe cierto debate sobre cuántas especies de primates existen actualmente. Varias fuentes afirman que el orden de los mamíferos Primates puede incluir de 376 a 522 especies. Establezca la fracción de muestreo para asumir estos valores diferentes para la diversidad total de especies del orden. ¿Qué efecto tienen estas diferentes diversidades supuestas en nuestra especiación y extinción estimadas?
+
+```{r}
+#Your code here
+```
+
+
+BIBLIOGRAFÍA BÁSICA
+
+Nee, S., Mooers, A. O., & Harvey, P. H. (1992). Tempo and mode of evolution revealed from molecular phylogenies. Proceedings of the National Academy of Sciences, 89(17), 8322-8326.
+
+BIBLIOGRAFÍA RECOMENDADA
+
+FitzJohn, R. G. (2012). Diversitree: comparative phylogenetic analyses of diversification in R. Methods in Ecology and Evolution, 3(6), 1084-1092.
+
+Near, T. J., Bossu, C. M., Bradburd, G. S., Carlson, R. L., Harrington, R. C., Hollingsworth Jr, P. R., ... & Etnier, D. A. (2011). Phylogeny and temporal diversification of darters (Percidae: Etheostomatinae). Systematic Biology, 60(5), 565-595.
+
+Nee, S., Holmes, E. C., May, R. M., & Harvey, P. H. (1994). Extinction rates can be estimated from molecular phylogenies. Philosophical Transactions of the Royal Society of London. Series B: Biological Sciences, 344(1307), 77-82.
+
+Nee, S., May, R. M., & Harvey, P. H. (1994). The reconstructed evolutionary process. Philosophical Transactions of the Royal Society of London. Series B: Biological Sciences, 344(1309), 305-311.
+
