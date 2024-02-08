@@ -245,7 +245,7 @@ samples<-diversitree::mcmc(bd,c(1,0),nsteps=1e+05,lower=c(0,0),upper=c(Inf,Inf),
 head(samples,20)
 ```
 
-La convegencia de este modelo se alcanza bastante rápido. Quitaremos como burn-inel %5 inicial de la iteraciones.
+La convegencia de este modelo se alcanza bastante rápido. Quitaremos como burn-in el %5 inicial de la iteraciones.
 
 ```{r}
 samples<-samples[-(1:5000),]

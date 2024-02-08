@@ -12,7 +12,7 @@ fitted.bd<-find.mle(bd,x.init=c(0.1,0.05),method="optim",lower=0)
 fitted.bd
 
 ## make pure-birth likelihood function
-yule<-make.yule(darter.tree,sampling.f=sampling.f)
+yule<-make.yule(mytree,sampling.f=sampling.f)
 ## find MLE using optimization function
 fitted.yule<-find.mle(yule,x.init=0.1,method="optim",lower=0)
 fitted.yule
