@@ -39,7 +39,7 @@ abline(v=obj$times,lty="dotted",col=make.transparent("blue",0.5))
 mtext("(b)",line=1,at=-10)
 ```
 
-La teoría nos dice que en un escenario de speciación constante (sin extinción; pure-birth), los linajes se acumulan exponecialmente a lo largo del tiempo desde la raíz del árbol.
+La teoría nos dice que en un escenario de speciación constante (sin extinción; pure-birth), los linajes se acumulan exponencialmente a lo largo del tiempo desde la raíz del árbol.
 Como tal, esperamos que una curva que proporcione el número de linajes a lo largo del tiempo sea “log-lineal”: en otras palabras, lineal en una escala semilogarítmica, asumiendo un proceso de diversificación que involucra sólo especiación y en el cual la especiación ocurre a un ritmo constante.
 
 Para estudiar el proceso de diversificación en más detalle vamos a utilizar la filogenia de un grupo de peces (Near et al., 2011). En este estudio se muestraron 201 de un total de 216 especie que constituyen el clado de peces (93%). Para cálculos de tasas de diversificación es necesario tener en cuenta ese muestreo incompleto que se ha hecho del grupo.
@@ -62,7 +62,7 @@ text(obj,rep(-5,length(obj)),h-obj,cex=0.6)
 text(mean(obj),-8,"time (mybp)",cex=0.8)
 ```
 
-Y ya estamos listoS para computar LTT.
+Y ya estamos listos para computar LTT.
 
 ```{r}
 ## compute "ltt" object
@@ -83,6 +83,7 @@ La pendiente de la recta de acumulación de linajes en escala semilogatirmica es
 Si la diversificación ocurre por especiación y extinción, entonces esta acumulación de linajes a traves del tiempo ya no va a ser lineal en esa escala semilogaritmica. En cambio, esta curva tenderá a estar curvada hacia arriba cerca de los terminales de la filogenia, un fenómeno que se llama "the pull of the present" (Nee et al., 1992, 1994b). En esencia la magnitud de esa curvatura nos dará por tanto la tasa de extinción.
 Un incremento de la pendiente hacia el presente es firma de la extinción. Y cuanto mayor sea el ratio extinción/especiación, mayor será la magnitud de esta curva.
 Veamoslo mediante una simulación.
+
 Con la función pbtree vamos a simular un árbol sin extinción (en este caso tenemos un recta en escala semilogaritmica) y esa pendiente es la tasa de especiación.
 También vamos a simular un arbol de tipo birth-death, es decir, con especiación y extinción, además, esa extinción será muy elevada. Vamos a calcular el LTT de ese árbol incluyendo los linajes extintos.
 Finalmente, quitaremos los linajes extintos y volveremos a creat el LTT. Y en este caso visualizaremos lo que esperamos bajo el efecto "pull of the present".
