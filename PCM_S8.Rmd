@@ -123,7 +123,7 @@ text(x=106,y=28,"pull of\nthe present",adj=c(1,1),cex=0.7)
 Se puede observar perfectamente el pull of the present.
 Esto lo vamos autilizar para calcular la tasa de especiación y extinción.
 
-Usaremos la función fit.bd de phytools (Nee t al., 1994a).
+Usaremos la función fit.bd de phytools (Nee et al., 1994a).
 
 ```{r}
 bd.model<-fit.bd(darter.tree)
@@ -245,7 +245,7 @@ samples<-diversitree::mcmc(bd,c(1,0),nsteps=1e+05,lower=c(0,0),upper=c(Inf,Inf),
 head(samples,20)
 ```
 
-La convegencia de este modelo se alcanza bastante rápido. Quitaremos como burn-in el %5 inicial de la iteraciones.
+La convergencia de este modelo se alcanza bastante rápido. Quitaremos como burn-in el %5 inicial de las iteraciones.
 
 ```{r}
 samples<-samples[-(1:5000),]
