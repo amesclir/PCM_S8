@@ -77,11 +77,11 @@ plot(darter.ltt,log.lineages=FALSE,log="y",col="blue",lwd=2,bty="n",las=1,cex.ax
 
 ESTIMACIÓN DE TASAS DE ESPECIACIÓN Y EXTINCIÓN A PARTIR DE UNA FILOGENIA
 
-Usaremos para calcular laS tasas de especiación y extinción el método de Nee et al. (1992).
+Usaremos para calcular las tasas de especiación y extinción el método de Nee et al. (1992).
 Hasta ahora hemos visto que si solo hay especiación, esperamos que la curva de acumulación de linajes se una recta cuando lo representamos en una escala semilogarítmica.
 La pendiente de la recta de acumulación de linajes en escala semilogatirmica es en este caso el valor esperado de especiación o diversificación (ya que la extinción es 0; Nee et al., 1992, 1994).
 Si la diversificación ocurre por especiación y extinción, entonces esta acumulación de linajes a traves del tiempo ya no va a ser lineal en esa escala semilogaritmica. En cambio, esta curva tenderá a estar curvada hacia arriba cerca de los terminales de la filogenia, un fenómeno que se llama "the pull of the present" (Nee et al., 1992, 1994b). En esencia la magnitud de esa curvatura nos dará por tanto la tasa de extinción.
-Un incremento de la pendiente hacia el presente es firma de la extinción. Y cuanto mayor sea el ratio extinción/especiación, mayor será la magnitud de esta curva.
+Un incremento de la pendiente hacia el presente es la firma de la extinción. Y cuanto mayor sea el ratio extinción/especiación, mayor será la magnitud de esta curva.
 Veamoslo mediante una simulación.
 
 Con la función pbtree vamos a simular un árbol sin extinción (en este caso tenemos un recta en escala semilogaritmica) y esa pendiente es la tasa de especiación.
@@ -121,7 +121,7 @@ text(x=106,y=28,"pull of\nthe present",adj=c(1,1),cex=0.7)
 ```
 
 Se puede observar perfectamente el pull of the present.
-Esto lo vamos autilizar para calcular la tasa de especiación y extinción.
+Esto lo vamos a utilizar para calcular la tasa de especiación y extinción.
 
 Usaremos la función fit.bd de phytools (Nee et al., 1994a).
 
@@ -148,7 +148,7 @@ bd.model
 Podemos apreciar que ha incrementado tanto la tasa de especiación como también la de extinción.
 
 Veamos el efecto el % de muestreo en la estima de especiación y extinción.
-Si volvemos a nuestro data set simulado podemos sacar alguna conclusiones.
+Si volvemos a nuestro data set simulado podemos sacar algunas conclusiones.
 
 ```{r}
 plot(tree.reconstructed)
@@ -171,7 +171,7 @@ legend(x="topleft",lty=c("solid","dotted"),lwd=c(2,2),col=c("darkgray","black"),
 
 A pesar de quitar 50 especies los LTT son muy parecidos en toda la historia evolutiva salvo cuando nos acercamos al presente. En el LTT de todas las especies podemos apreciar el pull of the present. Sin embargo, en el LTT en donde quitamos la 50 especies, se parece más a una línea recta.
 Como hemos dicho antes el patrón de pull of the present aporta información sobre la extinción. Si no tenemos un muestreo completo de nuestro dataset se oscurece este patron y la posibilidad de inferir información sobre el proceso de extinción.
-Por lo tanto es esencial tener en cuenta las especies que no muestreadas en la filogenia cuando se infiere el patrón de diverisificación a partir de una filogenia.
+Por lo tanto es esencial tener en cuenta las especies que no muestreadas en la filogenia cuando se infiere el patrón de diversificación a partir de una filogenia.
 
 
 Podemos comparar el ajuste de diferentes modelos de diversificación, por ejemplo los mencionados pure-birth y birth-death.
@@ -243,6 +243,7 @@ Hasta ahora hemos estimado y comparado ambos modelos mediante maximum likelihood
 ## run MCMC using diversitree::mcmc
 samples<-diversitree::mcmc(bd,c(1,0),nsteps=1e+05,lower=c(0,0),upper=c(Inf,Inf),w=c(0.05,0.05),fail.value=-Inf,print.every=10000)
 head(samples,20)
+#w turning parameter for the sampler
 ```
 
 La convergencia de este modelo se alcanza bastante rápido. Quitaremos como burn-in el %5 inicial de las iteraciones.
