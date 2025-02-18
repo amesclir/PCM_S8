@@ -10,7 +10,7 @@ editor_options:
 LINAJES A TRAVÉS DEL TIEMPO (LTT)
 
 Una manera muy práctica de representar el proceso de diversificación es mediante "lineage through time" o LTT.
-Básicamentee lo que hacemos es contar el número de linajes que se van acumulando desde la raíz de la filogenia hasta el presente.
+Básicamento lo que hacemos es contar el número de linajes que se van acumulando desde la raíz de la filogenia hasta el presente.
 
 Vamos a visualizar esto mediante la creación de una figura a partir de datos simulados.
 
@@ -78,7 +78,7 @@ plot(darter.ltt,log.lineages=FALSE,log="y",col="blue",lwd=2,bty="n",las=1,cex.ax
 ESTIMACIÓN DE TASAS DE ESPECIACIÓN Y EXTINCIÓN A PARTIR DE UNA FILOGENIA
 
 Usaremos para calcular las tasas de especiación y extinción el método de Nee et al. (1992).
-Hasta ahora hemos visto que si solo hay especiación, esperamos que la curva de acumulación de linajes se una recta cuando lo representamos en una escala semilogarítmica.
+Hasta ahora hemos visto que si solo hay especiación, esperamos que la curva de acumulación de linajes sea una recta cuando lo representamos en una escala semilogarítmica.
 La pendiente de la recta de acumulación de linajes en escala semilogatirmica es en este caso el valor esperado de especiación o diversificación (ya que la extinción es 0; Nee et al., 1992, 1994).
 Si la diversificación ocurre por especiación y extinción, entonces esta acumulación de linajes a traves del tiempo ya no va a ser lineal en esa escala semilogaritmica. En cambio, esta curva tenderá a estar curvada hacia arriba cerca de los terminales de la filogenia, un fenómeno que se llama "the pull of the present" (Nee et al., 1992, 1994b). En esencia la magnitud de esa curvatura nos dará por tanto la tasa de extinción.
 Un incremento de la pendiente hacia el presente es la firma de la extinción. Y cuanto mayor sea el ratio extinción/especiación, mayor será la magnitud de esta curva.
@@ -210,10 +210,10 @@ lrtest(yule.model2,bd.model2)
 ```
 
 Podemos ver como nuestra estima de extinción ha incrementado significativamente (más de un orden de magnitud).
-Y además, ahora no rechazamos la hipótesis nula, el modelo pure-birth.
+Y además, ahora rechazamos la hipótesis nula, el modelo pure-birth.
 
 
-ESTIMACIÓN DE TASAS DE DIVERFICACIÓN CON MÉTODOS BAYESIANOS MCMC
+ESTIMACIÓN DE TASAS DE DIVERSIFICACIÓN CON MÉTODOS BAYESIANOS MCMC
 
 Veamos ahora com ajustar modelos con el paquete de R diversitree (FitzJohn 2012).
 Vamos a usar diversitree también en las dos próximas sesiones. Aquí veremos como ajustar y compararar modelos birth-death mediante maximum likelihood y también mediantre MCMC bayesiano.
