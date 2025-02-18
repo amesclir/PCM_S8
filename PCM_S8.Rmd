@@ -9,7 +9,7 @@ editor_options:
 
 LINAJES A TRAVÉS DEL TIEMPO (LTT)
 
-Una manera muy práctica de represetar el proceso de diversificación es mediante "lineage through time" o LTT.
+Una manera muy práctica de representar el proceso de diversificación es mediante "lineage through time" o LTT.
 Básicamentee lo que hacemos es contar el número de linajes que se van acumulando desde la raíz de la filogenia hasta el presente.
 
 Vamos a visualizar esto mediante la creación de una figura a partir de datos simulados.
@@ -86,7 +86,7 @@ Veamoslo mediante una simulación.
 
 Con la función pbtree vamos a simular un árbol sin extinción (en este caso tenemos un recta en escala semilogaritmica) y esa pendiente es la tasa de especiación.
 También vamos a simular un arbol de tipo birth-death, es decir, con especiación y extinción, además, esa extinción será muy elevada. Vamos a calcular el LTT de ese árbol incluyendo los linajes extintos.
-Finalmente, quitaremos los linajes extintos y volveremos a creat el LTT. Y en este caso visualizaremos lo que esperamos bajo el efecto "pull of the present".
+Finalmente, quitaremos los linajes extintos y volveremos a crear el LTT. Y en este caso visualizaremos lo que esperamos bajo el efecto "pull of the present".
 
 ```{r}
 
@@ -123,8 +123,8 @@ text(x=106,y=28,"pull of\nthe present",adj=c(1,1),cex=0.7)
 Se puede observar perfectamente el pull of the present.
 Esto lo vamos a utilizar para calcular la tasa de especiación y extinción.
 
-Usaremos la función fit.bd de phytools (Nee et al., 1994a).
 
+Usaremos la función fit.bd de phytools (Nee et al., 1994a) para calcular la tasa de especiación y extinción en nuestro ejemplo de peces.
 ```{r}
 bd.model<-fit.bd(darter.tree)
 bd.model
@@ -147,9 +147,9 @@ bd.model
 
 Podemos apreciar que ha incrementado tanto la tasa de especiación como también la de extinción.
 
+
 Veamos el efecto el % de muestreo en la estima de especiación y extinción.
 Si volvemos a nuestro data set simulado podemos sacar algunas conclusiones.
-
 ```{r}
 plot(tree.reconstructed)
 ## collapse singleton nodes
@@ -191,6 +191,7 @@ lrtest(yule.model,bd.model)
 
 Nuestro árbol se ajusta a un proceso pure-birth.
 
+
 Finalmente vamos a ver con un simple experimento hasta que punto es importante tener en cuenta las especies no muestreadas en la filogenia.
 Vamos a asumir que nuestro grupo de especies bajo estudio tiene 400 especies en vez de 216.
 Y vamos de nuevo a ajustar los modelos.
@@ -208,7 +209,7 @@ lrtest(yule.model2,bd.model2)
 
 ```
 
-Podemos ver como nuestra estima de extinción ha incrementado significativamente.
+Podemos ver como nuestra estima de extinción ha incrementado significativamente (más de un orden de magnitud).
 Y además, ahora no rechazamos la hipótesis nula, el modelo pure-birth.
 
 
@@ -263,7 +264,7 @@ mu<-samples$mu
 ## set object class to "mcmc"
 class(lambda)<-class(mu)<-"mcmc"
 ## create data frame with our estimates and## HPD for each parameter
-object<-data.frame(lambda=c(mean(lambda),HPDinterval(lambda)),mu=c(mean(lambda),HPDinterval(mu)))
+object<-data.frame(lambda=c(mean(lambda),HPDinterval(lambda)),mu=c(mean(mu),HPDinterval(mu)))
 rownames(object)<-c("estimate","2.5% HPD","97.5% HPD")
 ## round our object to print it
 print(round(object,6))
