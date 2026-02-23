@@ -3,6 +3,7 @@ library(diversitree)
 mytrees <- read.nexus("10kTrees_Primates.nex")
 mytree<-consensus.edges(mytrees,method="least.squares")
 mytree
+#mytree <- force.ultrametric(mytree)
 mytree <- multi2di(mytree)
 sampling.f <- 273/376
 ## make birth-death likelihood function
